@@ -1,0 +1,25 @@
+{
+  "name": "count-freela",
+  "version": "1.0.0",
+  "description": "API REST para controle de projetos freelancer",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FilipeGran/count-freela.git"
+  },
+  "author": "Filipe Grangeiro Vieira",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FilipeGran/count-freela/issues"
+  },
+  "homepage": "https://github.com/FilipeGran/count-freela#readme",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "express": "^4.18.1",
+    "knex": "^2.2.0",
+    "mysql2": "^2.3.3"
+  }
+}
