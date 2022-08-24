@@ -1,5 +1,7 @@
 const Bcrypt = require('../util/Bcrypt');
 const Knex = require('../database/connection');
+const jwt = require('jsonwebtoken');
+const secret = 'testsecret';
 
 class User {
     async create(user, password) {
@@ -14,11 +16,9 @@ class User {
     }
 
     async getAllUsers() {
-        try {
-            return await Knex.select('*').table('user');
-        } catch (error) {
-            console.log(error);
-            return [];
+        return {
+            status: true,
+            message: 'Api rodando!'
         }
     }
 
@@ -85,6 +85,62 @@ class User {
 
         } else {
             return false;
+        }
+    }
+
+    async updatePassword(id, newPassword) {
+        try {
+            const hash = Bcrypt.encrypt(newPassword);
+            const result = await Knex.update({
+                password: hash
+            }).where({
+                id
+            }).table('user');
+            return {
+                status: true,
+            }
+        } catch (error) {
+            console.log(error);
+            return {
+                status: false,
+                error: 'Erro ao atualizar senha!'
+            }
+        }
+    }
+
+    async login(email, password) {
+        try {
+            const user = await this.getByEmail(email);
+            if (user !== undefined) {
+                const isEqualPassword = Bcrypt.comparePassword(password, user[0].password);
+                if (isEqualPassword) {
+                    const tokenAuth = jwt.sign({
+                        idUser: user[0].id,
+                        name: user[0].name,
+                        email: user[0].email
+                    }, secret);
+                    return {
+                        status: true,
+                        token: tokenAuth
+                    }
+                } else {
+                    return {
+                        status: false,
+                        error: 'Senha inválida!'
+                    }
+                }
+            } else {
+                return {
+                    status: false,
+                    error: 'Usuário não existe no banco de dados!'
+                }
+            }
+        } catch (error) {
+            console.log(error);
+            return {
+                status: false,
+                error: 'Erro ao consultar usuário pelo email'
+            }
         }
     }
 }

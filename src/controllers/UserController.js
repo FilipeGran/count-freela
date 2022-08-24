@@ -44,15 +44,15 @@ class UserController {
     async getAll(req, res) {
         try {
             let result = await User.getAllUsers();
-            if (result.length !== 0) {
+            if (result.status) {
                 res.status(200);
                 res.json({
-                    dados: result
+                    dados: result.message
                 });
             } else {
                 res.status(404);
                 res.json({
-                    error: 'Nenhum dado Encontrado!'
+                    error: 'Página não encontrada!'
                 });
             }
         } catch (error) {
@@ -92,6 +92,36 @@ class UserController {
             res.Status(500);
             res.json({
                 error: 'Erro interno do Servidor, entre em contato com o Suporte'
+            });
+        }
+    }
+
+    async login(req, res) {
+        const {
+            email,
+            password
+        } = req.body;
+
+        try {
+            const result = await User.login(email, password);
+
+            if (result.status) {
+                res.status(200);
+                res.json({
+                    token: result.token
+                });
+            } else {
+                res.status(400);
+                res.json({
+                    error: result.error
+                });
+            }
+
+        } catch (error) {
+            console.log(error);
+            res.status(500);
+            res.json({
+                error: 'Erro interno do Servidor!'
             });
         }
     }
